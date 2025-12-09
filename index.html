@@ -189,7 +189,7 @@ const jobs = [
 
     {name:"데빌헌터(전탄)", gender:"남성", range:"근거리", tank:"하", hit:"제한"},
     {name:"데빌헌터(잼드)", gender:"남성", range:"근거리", tank:"하", hit:"자유"}
-];
+    ];
 
 function getChecked(name) {
     return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
@@ -213,14 +213,23 @@ function recommend() {
         return;
     }
 
-    const allowLowTank = tanks.includes("상관없음");
+    const selectedTank = tanks[0]; // 상관없음 or 높음
 
-    const result = jobs.filter(job =>
+    const highTier = ["중", "중상", "상"];
+
+    const result = jobs.filter(job => {
+    const tankOK =
+        selectedTank === "상관없음" ||
+        (selectedTank === "높음" && highTier.includes(job.tank));
+
+    return (
         genders.includes(job.gender) &&
         ranges.includes(job.range) &&
         hits.includes(job.hit) &&
-        (allowLowTank || tanks.includes(job.tank))
+        tankOK
     );
+});
+
 
     let output = `
     <h3>✅ 선택한 설문</h3>
