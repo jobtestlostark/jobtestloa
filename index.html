@@ -67,9 +67,13 @@ textarea {
 
 <div class="question">
 <b>3. 체방</b><br>
+<small style="color:#ccc;">
+※ 낮음: 평균 이상의 직업들은 맞고 살아남는 패턴에서도 맞고 죽을 수 있음
+</small><br><br>
 <input type="radio" name="tank" value="낮음"> 낮음
 <input type="radio" name="tank" value="높음"> 높음
 </div>
+
 
 <div class="question">
 <b>4. 타점</b><br>
@@ -165,7 +169,15 @@ function recommend() {
         result.forEach(j => output += `- ${j.name}<br>`);
     }
 
+    output += `
+    <br><hr>
+    <b style="color:#ff4757;">
+    ✅ 스크린샷으로 결과를 찍어서 같이 질문해주세요!
+    </b>
+    `;
+
     document.getElementById("result").innerHTML = output;
+
 }
 </script>
 
