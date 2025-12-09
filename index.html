@@ -46,6 +46,15 @@ textarea {
     width: 100%;
     height: 60px;
 }
+small {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.low {
+    color: #ff6b81;
+    font-size: 13px;
+}
 </style>
 </head>
 <body>
@@ -54,31 +63,30 @@ textarea {
 <h1>로스트아크 직업 추천</h1>
 
 <div class="question">
-<b>1. 성별</b><br>
-<input type="radio" name="gender" value="남성"> 남성
-<input type="radio" name="gender" value="여성"> 여성
+<b>1. 성별 <span style="color:#aaa;">(중복 선택 가능)</span></b><br>
+<input type="checkbox" name="gender" value="남성"> 남성
+<input type="checkbox" name="gender" value="여성"> 여성
 </div>
 
 <div class="question">
-<b>2. 사거리</b><br>
-<input type="radio" name="range" value="근거리"> 근거리
-<input type="radio" name="range" value="원거리"> 원거리
+<b>2. 사거리 <span style="color:#aaa;">(중복 선택 가능)</span></b><br>
+<input type="checkbox" name="range" value="근거리"> 근거리
+<input type="checkbox" name="range" value="원거리"> 원거리
 </div>
 
 <div class="question">
-<b>3. 체방</b><br>
+<b>3. 체방 <span style="color:#aaa;">(중복 선택 가능)</span></b><br>
 <small style="color:#ccc;">
-※ 낮음: 평균 이상의 직업들은 맞고 살아남는 패턴에서도 맞고 죽을 수 있음
-</small><br><br>
-<input type="radio" name="tank" value="낮음"> 낮음
-<input type="radio" name="tank" value="높음"> 높음
+※ 상관없음 선택 시 체방이 낮거나 높은 직업 모두 추천됩니다.
+</small>
+<input type="checkbox" name="tank" value="상관없음"> 상관없음
+<input type="checkbox" name="tank" value="높음"> 높음
 </div>
 
-
 <div class="question">
-<b>4. 타점</b><br>
-<input type="radio" name="hit" value="자유"> 자유
-<input type="radio" name="hit" value="제한"> 제한
+<b>4. 타점 <span style="color:#aaa;">(중복 선택 가능)</span></b><br>
+<input type="checkbox" name="hit" value="자유"> 자유
+<input type="checkbox" name="hit" value="제한"> 제한
 </div>
 
 <div class="question">
@@ -125,48 +133,58 @@ const jobs = [
     {name:"환수사", gender:"여성", range:"근거리", tank:"낮음", hit:"자유"},
 
     {name:"데빌헌터(전탄)", gender:"남성", range:"근거리", tank:"낮음", hit:"제한"},
-    {name:"데빌헌터(잼드)", gender:"남성", range:"근거리", tank:"낮음", hit:"자유"},
+    {name:"데빌헌터(잼드)", gender:"남성", range:"근거리", tank:"낮음", hit:"자유"}
 ];
 
+function getChecked(name) {
+    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+                .map(el => el.value);
+}
+
 function recommend() {
-    const gender = document.querySelector('input[name="gender"]:checked')?.value;
-    const range = document.querySelector('input[name="range"]:checked')?.value;
-    const tank = document.querySelector('input[name="tank"]:checked')?.value;
-    const hit = document.querySelector('input[name="hit"]:checked')?.value;
+    const genders = getChecked("gender");
+    const ranges = getChecked("range");
+    const tanks = getChecked("tank");
+    const hits = getChecked("hit");
     const extra = document.getElementById("extra").value;
 
-    if (!gender || !range || !tank || !hit) {
-        alert("모든 항목을 선택하세요.");
+    if (!genders.length || !ranges.length || !tanks.length || !hits.length) {
+        alert("모든 항목을 하나 이상 선택하세요.");
         return;
     }
 
-    if (range === "원거리" && hit === "제한") {
+    if (ranges.includes("원거리") && hits.includes("제한")) {
         alert("원거리 + 제한 타점은 선택할 수 없습니다.");
         return;
     }
 
+    const allowLowTank = tanks.includes("상관없음");
+
     const result = jobs.filter(job =>
-        job.gender === gender &&
-        job.range === range &&
-        job.tank === tank &&
-        job.hit === hit
+        genders.includes(job.gender) &&
+        ranges.includes(job.range) &&
+        hits.includes(job.hit) &&
+        (allowLowTank || tanks.includes(job.tank))
     );
 
     let output = `
     <h3>✅ 선택한 설문</h3>
-    성별: ${gender}<br>
-    사거리: ${range}<br>
-    체방: ${tank}<br>
-    타점: ${hit}<br>
+    성별: ${genders.join(", ")}<br>
+    사거리: ${ranges.join(", ")}<br>
+    체방: ${tanks.join(", ")}<br>
+    타점: ${hits.join(", ")}<br>
     추가 요청: ${extra || "없음"}<br><br>
 
     <h3>✅ 추천 직업</h3>
     `;
 
-    if (result.length === 0) {
+    if (!result.length) {
         output += "조건에 맞는 직업이 없습니다.";
     } else {
-        result.forEach(j => output += `- ${j.name}<br>`);
+        result.forEach(j => {
+            const low = j.tank === "낮음" ? ' <span class="low">[체방 낮음]</span>' : '';
+            output += `- ${j.name}${low}<br>`;
+        });
     }
 
     output += `
@@ -177,7 +195,6 @@ function recommend() {
     `;
 
     document.getElementById("result").innerHTML = output;
-
 }
 </script>
 
