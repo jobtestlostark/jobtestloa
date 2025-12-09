@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>로스트아크 직업 추천 테스트</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    padding: 30px;
+}
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: #1c1c1c;
+    padding: 25px;
+    border-radius: 10px;
+}
+h1 {
+    text-align: center;
+}
+.question {
+    margin-bottom: 20px;
+}
+button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background: #ff4757;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+button:hover {
+    background: #ff6b81;
+}
+.result {
+    margin-top: 30px;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+}
+textarea {
+    width: 100%;
+    height: 60px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>로스트아크 직업 추천</h1>
+
+<div class="question">
+<b>1. 성별</b><br>
+<input type="radio" name="gender" value="남성"> 남성
+<input type="radio" name="gender" value="여성"> 여성
+</div>
+
+<div class="question">
+<b>2. 사거리</b><br>
+<input type="radio" name="range" value="근거리"> 근거리
+<input type="radio" name="range" value="원거리"> 원거리
+</div>
+
+<div class="question">
+<b>3. 체방</b><br>
+<input type="radio" name="tank" value="낮음"> 낮음
+<input type="radio" name="tank" value="높음"> 높음
+</div>
+
+<div class="question">
+<b>4. 타점</b><br>
+<input type="radio" name="hit" value="자유"> 자유
+<input type="radio" name="hit" value="제한"> 제한
+</div>
+
+<div class="question">
+<b>✅ 추가로 원하는 조건</b><br>
+<textarea id="extra" placeholder="예: 이동기 많은 직업, 난이도 쉬운 직업 등"></textarea>
+</div>
+
+<button onclick="recommend()">완료</button>
+
+<div id="result" class="result"></div>
+</div>
+
+<script>
+const jobs = [
+    {name:"디스트로이어", gender:"남성", range:"근거리", tank:"높음", hit:"제한"},
+    {name:"워로드", gender:"남성", range:"근거리", tank:"높음", hit:"자유"},
+    {name:"버서커", gender:"남성", range:"근거리", tank:"높음", hit:"자유"},
+    {name:"슬레이어", gender:"여성", range:"근거리", tank:"높음", hit:"제한"},
+
+    {name:"배틀마스터", gender:"여성", range:"근거리", tank:"높음", hit:"자유"},
+    {name:"인파이터", gender:"여성", range:"근거리", tank:"높음", hit:"제한"},
+    {name:"기공사", gender:"여성", range:"근거리", tank:"낮음", hit:"자유"},
+    {name:"창술사", gender:"여성", range:"근거리", tank:"높음", hit:"제한"},
+    {name:"스트라이커", gender:"남성", range:"근거리", tank:"낮음", hit:"제한"},
+    {name:"브레이커(수라)", gender:"남성", range:"근거리", tank:"높음", hit:"제한"},
+    {name:"브레이커(권왕)", gender:"남성", range:"근거리", tank:"높음", hit:"자유"},
+
+    {name:"블래스터", gender:"남성", range:"원거리", tank:"높음", hit:"제한"},
+    {name:"호크아이", gender:"남성", range:"원거리", tank:"낮음", hit:"자유"},
+    {name:"스카우터", gender:"남성", range:"원거리", tank:"높음", hit:"자유"},
+
+    {name:"건슬링어", gender:"여성", range:"원거리", tank:"낮음", hit:"자유"},
+    {name:"소서리스", gender:"여성", range:"원거리", tank:"낮음", hit:"자유"},
+    {name:"서머너", gender:"여성", range:"원거리", tank:"낮음", hit:"자유"},
+
+    {name:"아르카나", gender:"여성", range:"근거리", tank:"낮음", hit:"자유"},
+    {name:"데모닉", gender:"여성", range:"근거리", tank:"높음", hit:"자유"},
+    {name:"블레이드", gender:"여성", range:"근거리", tank:"낮음", hit:"제한"},
+    {name:"리퍼", gender:"여성", range:"근거리", tank:"낮음", hit:"제한"},
+    {name:"소울이터", gender:"여성", range:"원거리", tank:"낮음", hit:"자유"},
+
+    {name:"기상술사(질풍)", gender:"여성", range:"근거리", tank:"낮음", hit:"자유"},
+    {name:"기상술사(이슬비)", gender:"여성", range:"원거리", tank:"낮음", hit:"자유"},
+    {name:"환수사", gender:"여성", range:"근거리", tank:"낮음", hit:"자유"},
+
+    {name:"데빌헌터(전탄)", gender:"남성", range:"근거리", tank:"낮음", hit:"제한"},
+    {name:"데빌헌터(잼드)", gender:"남성", range:"근거리", tank:"낮음", hit:"자유"},
+];
+
+function recommend() {
+    const gender = document.querySelector('input[name="gender"]:checked')?.value;
+    const range = document.querySelector('input[name="range"]:checked')?.value;
+    const tank = document.querySelector('input[name="tank"]:checked')?.value;
+    const hit = document.querySelector('input[name="hit"]:checked')?.value;
+    const extra = document.getElementById("extra").value;
+
+    if (!gender || !range || !tank || !hit) {
+        alert("모든 항목을 선택하세요.");
+        return;
+    }
+
+    if (range === "원거리" && hit === "제한") {
+        alert("원거리 + 제한 타점은 선택할 수 없습니다.");
+        return;
+    }
+
+    const result = jobs.filter(job =>
+        job.gender === gender &&
+        job.range === range &&
+        job.tank === tank &&
+        job.hit === hit
+    );
+
+    let output = `
+    <h3>✅ 선택한 설문</h3>
+    성별: ${gender}<br>
+    사거리: ${range}<br>
+    체방: ${tank}<br>
+    타점: ${hit}<br>
+    추가 요청: ${extra || "없음"}<br><br>
+
+    <h3>✅ 추천 직업</h3>
+    `;
+
+    if (result.length === 0) {
+        output += "조건에 맞는 직업이 없습니다.";
+    } else {
+        result.forEach(j => output += `- ${j.name}<br>`);
+    }
+
+    document.getElementById("result").innerHTML = output;
+}
+</script>
+
+</body>
+</html>
