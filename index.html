@@ -100,46 +100,6 @@ small {
 </div>
 
 <script>
-<h1>로스트아크 직업 추천</h1>
-
-<div class="question">
-<b>1. 직업성별 <span style="color:#aaa;">(중복 선택 가능)</span></b><br>
-<input type="checkbox" name="gender" value="남성"> 남성
-<input type="checkbox" name="gender" value="여성"> 여성
-</div>
-
-<div class="question">
-<b>2. 사거리 <span style="color:#aaa;">(중복 선택 가능)</span></b><br>
-<input type="checkbox" name="range" value="근거리"> 근거리
-<input type="checkbox" name="range" value="원거리"> 원거리
-</div>
-
-<div class="question">
-<b>3. 체방 <span style="color:#aaa;"></span></b><br>
-<small style="color:#ccc;">
-※ 상관없음 선택 시 체방이 낮거나 높은 직업 모두 추천됩니다.
-</small>
-<input type="radio" name="tank" value="상관없음"> 상관없음
-<input type="radio" name="tank" value="높음"> 높음
-</div>
-
-<div class="question">
-<b>4. 타점 <span style="color:#aaa;"></span></b><br>
-<input type="radio" name="hit" value="자유"> 자유
-<input type="radio" name="hit" value="제한"> 제한
-</div>
-
-<div class="question">
-<b>✅ 추가로 원하는 조건</b><br>
-<textarea id="extra" placeholder="예: 이동기 많은 직업, 난이도 쉬운 직업 등"></textarea>
-</div>
-
-<button onclick="recommend()">완료</button>
-
-<div id="result" class="result"></div>
-</div>
-
-<script>
 const jobs = [
     {name:"디스트로이어", gender:"남성", range:"근거리", tank:"상", hit:"제한"},
     {name:"워로드", gender:"남성", range:"근거리", tank:"상", hit:"자유"},
@@ -157,7 +117,7 @@ const jobs = [
     {name:"브레이커(수라)", gender:"남성", range:"근거리", tank:"중상", hit:"제한"},
     {name:"브레이커(권왕)", gender:"남성", range:"근거리", tank:"중상", hit:"자유"},
 
-    {name:"블래스터(포강)", gender:"남성", range:"원거리", tank:"", hit:"자유"},
+    {name:"블래스터(포강)", gender:"남성", range:"원거리", tank:"상", hit:"자유"},
     {name:"블래스터(화강)", gender:"남성", range:"원거리", tank:"중하", hit:"자유"},
     {name:"호크아이", gender:"남성", range:"원거리", tank:"하", hit:"자유"},
     {name:"스카우터(유산)", gender:"남성", range:"원거리", tank:"상", hit:"자유"},
